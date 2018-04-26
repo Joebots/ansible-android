@@ -1,5 +1,6 @@
+---
 galaxy_info:
-  author: FGtatsuro
+  author: Joebots
   description: Ansible role for android
   license: MIT
   min_ansible_version: 2.0

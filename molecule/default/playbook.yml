@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: !!bool True
+  roles:
+    - role: Joebots.android
+      android_home: /var/lib/android-tools
+      android_extra_components:
+        - extras;android;m2repository
+        - build-tools;27.0.3
+        - platforms;android-27

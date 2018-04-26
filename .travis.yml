@@ -1,7 +1,7 @@
 ---
 branches:
   only:
-  - master
+    - master
 
 # https://docs.travis-ci.com/user/multi-os/
 matrix:
@@ -22,7 +22,7 @@ matrix:
       addons:
         apt:
           packages:
-          - python-pip
+            - python-pip
       before_script:
         - docker run --cap-add=MKNOD -it -d --name container ${IMAGE_NAME} /bin/sh
         - docker exec -it container useradd testuser
@@ -40,7 +40,8 @@ sudo: required
 install:
   - sudo pip install -U setuptools
   - sudo pip install ansible
-  # Resolve dependencies(When target role isn't installed via Ansible Galaxy, auto resolution of dependencies doesn't occur.)
+  # Resolve dependencies(When target role isn't installed via
+  # Ansible Galaxy, auto resolution of dependencies doesn't occur.)
   - ansible-galaxy install -r role_requirements.yml
   - bundle install
 

@@ -6,11 +6,11 @@
 - name: Check whether adb command exists
   stat: path="{{ android_home }}/platform-tools/adb"
   register: stat_adb_command
-  changed_when: no
+  changed_when: false
 - name: Check whether lock file for extra components exists
   stat: path="{{ android_extra_components_lockpath }}"
   register: stat_extra_components_lockpath
-  changed_when: no
+  changed_when: false
 
 - block:
   - name: Ensure a directory for licenses
@@ -22,7 +22,7 @@
       src: "{{ android_license_src_dir }}"
       dest: "{{ android_home }}/licenses"
     when: android_license_src_dir is defined
-  become: yes
+  become: true
   when: (not stat_adb_command.stat.exists) or
         ((android_extra_components|length != 0) and (not stat_extra_components_lockpath.stat.exists))
 
@@ -30,25 +30,28 @@
   stat:
     path: "{{ ansible_env.HOME }}/.android/repositories.cfg"
   register: stat_repositories_cfg
-  changed_when: no
-- block:
-  - name: Create .android directory
-    file:
-      path: "{{ ansible_env.HOME }}/.android"
-      state: directory
-  - name: Create repositories.cfg
-    file:
-      path: "{{ ansible_env.HOME }}/.android/repositories.cfg"
-      state: touch
+  changed_when: true
+
+- name: .android block
+  block:
+    - name: Create .android directory
+      file:
+        path: "{{ ansible_env.HOME }}/.android"
+        state: directory
+    - name: Create repositories.cfg
+      file:
+        path: "{{ ansible_env.HOME }}/.android/repositories.cfg"
+        state: touch
   when: not stat_repositories_cfg.stat.exists
 - name: Install platform tool
   command: "{{ android_home }}/tools/bin/sdkmanager platform-tools"
   when: not stat_adb_command.stat.exists
 
-- block:
-  - name: Install extra components
-    command: "{{ android_home }}/tools/bin/sdkmanager {{ item }}"
-    with_items: "{{ android_extra_components }}"
-  - name: Create lock file for extra components
-    file: path="{{ android_extra_components_lockpath }}" state="touch"
+- name: extra components block
+  block:
+    - name: Install extra components
+      command: "{{ android_home }}/tools/bin/sdkmanager {{ item }}"
+      with_items: "{{ android_extra_components }}"
+    - name: Create lock file for extra components
+      file: path="{{ android_extra_components_lockpath }}" state="touch"
   when: (android_extra_components|length != 0) and (not stat_extra_components_lockpath.stat.exists)
