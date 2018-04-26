@@ -3,7 +3,8 @@
   hosts: all
   become: !!bool True
   roles:
-    - role: Joebots.android
+    - role: FGtatsuro.java
+    - role: ansible-role-android
       android_home: /var/lib/android-tools
       android_extra_components:
         - extras;android;m2repository

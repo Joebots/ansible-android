@@ -12,8 +12,10 @@ provisioner:
   lint:
     name: ansible-lint
 platforms:
-  - name: hostname-ubuntu-16.04
+  - name: ubuntu-16.04
     image: ubuntu:16.04
+  - name: ubuntu-18.04
+    image: ubuntu:18.04
 scenario:
   name: default
   test_sequence:
